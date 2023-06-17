@@ -211,7 +211,6 @@ namespace MayanSort {
     }
 
     _SortTpl _SortHead GoStableSort(It first, It last, Comp comp) {
-        typedef ItSize<It> Size;
         gosort::sort_stable(first, last, comp);
     }
 
@@ -322,9 +321,8 @@ namespace MayanSort {
     // Implementation by myself.
 
     _SortTpl _SortHead CircleSort(It first, It last, Comp comp) {
-        typedef ItValue<It> Item;
-        typedef ItSize<It> Size;
-        _impl::_circleSort<It, Item, Size, Comp>(first, std::distance(first, last), comp);
+        typedef ItValue<It> T;
+        _impl::_circleSort<T>(first, std::distance(first, last), comp);
     }
 
     _SortTplD _SortHead CircleSort(It first, It last) {
@@ -336,8 +334,7 @@ namespace MayanSort {
     // Implementation by myself
 
     _SortTpl _SortHead GnomeSort(It first, It last, Comp comp) {
-        typedef ItSize<It> Size;
-        _impl::_gnomeSort<It, Size, Comp>(first, std::distance(first, last), comp);
+        _impl::_gnomeSort(first, std::distance(first, last), comp);
     }
 
     _SortTplD _SortHead GnomeSort(It first, It last) {
@@ -362,10 +359,8 @@ namespace MayanSort {
     // Implementation: https://www.geeksforgeeks.org/cpp-program-for-shellsort/
 
     _SortTpl _SortHead ShellSort(It first, It last, Comp comp) {
-        typedef ItValue<It> Item;
-        typedef ItSize<It> Size;
-        Size len = std::distance(first, last);
-        _impl::_shellSort<It, Item, Size, Comp>(first, len, comp);
+        typedef ItValue<it> T;
+        _impl::_shellSort<T>(first, len, comp);
     }
 
     _SortTplD _SortHead ShellSort(It first, It last) {
@@ -390,10 +385,8 @@ namespace MayanSort {
     // Implementation by myself.
 
     _SortTpl _SortHead PatienceSort(It first, It last, Comp comp) {
-        typedef ItValue<It> Item;
-        typedef ItSize<It> Size;
-        Size len = std::distance(first, last);
-        _impl::_patience_sort<It, Item, Size, Comp>(first, len, comp);
+        typedef ItValue<It> T;
+        _impl::_patience_sort<T>(first, std::distance(first, last), comp);
     }
 
     _SortTplD _SortHead PatienceSort(It first, It last) {
@@ -404,9 +397,7 @@ namespace MayanSort {
     // Odd Even Sort (unstable)
     // Implementation: https://www.geeksforgeeks.org/odd-even-sort-brick-sort/
     _SortTpl _SortHead OddEvenSort(It first, It last, Comp comp) {
-        typedef ItSize<It> Size;
-        Size len = std::distance(first, last);
-        _impl::_oddEvenSort<It, Size, Comp>(first, len, comp);
+        _impl::_oddEvenSort(first, std::distance(first, last), comp);
     }
 
     _SortTplD _SortHead OddEvenSort(It first, It last) {
@@ -418,8 +409,7 @@ namespace MayanSort {
     // Implementation by myself.
 
     _SortTpl _SortHead SillySort(It first, It last, Comp comp) {
-        typedef ItSize<It> Size;
-        _impl::_sillySort<It, Size, Comp>(first, std::distance(first, last), comp);
+        _impl::_sillySort(first, std::distance(first, last), comp);
     }
 
     _SortTplD _SortHead SillySort(It first, It last) {
@@ -582,8 +572,8 @@ namespace MayanSort {
     // Double Insertion Sort (stable)
     // Implementation: https://baobaobear.github.io/post/20191009-sorting-2/
     _SortTpl _SortHead DoubleInsertSort(It first, It last, Comp comp) {
-        typedef ItValue<It> Item;
-        _impl::double_insert_sort<It, Item, Comp>(first, last, comp);
+        typedef ItValue<It> T;
+        _impl::double_insert_sort<T>(first, last, comp);
     }
 
     _SortTplD _SortHead DoubleInsertSort(It first, It last) {
@@ -635,7 +625,7 @@ namespace MayanSort {
         HeapSort<It, Compare>(first, last, Compare());
     }
 
-    // Hayate Sort (stable)
+    // Hayate Sort (unstable)
     // Implementation: https://github.com/EmuraDaisuke/SortingAlgorithm.HayateShiki/blob/master/HayateShiki.h
 
     _SortTpl _SortHead HayateSort(It first, It last, Comp comp) {
