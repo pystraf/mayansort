@@ -190,7 +190,7 @@ namespace MayanSort {
             if (sorted_subarray_end_points[sorted_subarray_end_points.size() - 1] != end)
                 sorted_subarray_end_points.push_back(end);
 
-            Size number_of_sorted_subarray = (int)sorted_subarray_end_points.size() - 1;
+            Size number_of_sorted_subarray = sorted_subarray_end_points.size() - 1;
 
             while (true)
             {

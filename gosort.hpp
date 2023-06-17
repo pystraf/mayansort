@@ -234,7 +234,7 @@ namespace MayanSort {
 		}
 
 		template<typename RandomAccessIterator, typename Comp>
-		requires std::sortable<RandomAccessIterator,  Comp>
+		requires std::sortable<RandomAccessIterator, Comp>
 		void sort_unstable(RandomAccessIterator first, RandomAccessIterator last, Comp comp) {
 			typedef typename MayanSort::ItSize<RandomAccessIterator> Size;
 			Size sz = std::distance(first, last);

@@ -33,7 +33,6 @@
 #include "pdqsort.hpp"
 #include "quick_merge_sort.hpp"
 #include "drop_merge_sort.hpp"
-#include "custom_compare.hpp"
 #include "timsort.hpp"
 #include "vergesort.hpp"
 #include "dual_pivot_quicksort.hpp"
