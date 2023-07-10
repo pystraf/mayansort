@@ -44,7 +44,7 @@
 #include "nanosort.hpp"
 #include "aroot.hpp"
 #include "hayate.hpp"
-
+#include "sqrtsort.hpp"
 
 #include "mayanimpl.hpp"
 
@@ -646,5 +646,16 @@ namespace MayanSort {
     _SortTplD _SortHead WeaveMergeSort(It first, It last) {
         _CompD;
         WeaveMergeSort<It, Compare>(first, last, Compare());
+    }
+
+    // Sqrtsort (stable)
+    // Implementation: https://github.com/pystraf/sqrt-sort (by myself).
+    _SortTpl _SortHead SqrtSort(It first, It last, Comp comp) {
+        sqrtsort::sqrtsort(first, last, comp);
+    }
+
+    _SortTplD _SortHead SqrtSort(It first, It last) {
+        _CompD;
+        SqrtSort<It, Compare>(first, last, Compare());
     }
 }
