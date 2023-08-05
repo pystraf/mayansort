@@ -31,6 +31,16 @@
 
 namespace MayanSort {
 	namespace _impl {
+        template<typename T, typename Size>
+        struct tmp_buffer{
+            T* memory;
+            Size size;
+            explicit tmp_buffer(Size size){
+				memory = new T[size];
+			}
+            ~tmp_buffer(){
+                delete [] memory;
+			}
 
 		// Dual-Pivot Quicksort
 		namespace _dualsort {
@@ -103,7 +113,7 @@ namespace MayanSort {
 		namespace _combsort {
 			// To find gap between elements
 			template<typename Size>
-			Size _next_gap(Size gap)
+			Size _get_next_gap(Size gap)
 			{
 				// Shrink gap by Shrink factor
 				gap = (gap * 10) / 13;
@@ -116,7 +126,7 @@ namespace MayanSort {
 			// Function to sort a[0..n-1] using Comb Sort
 			template<typename RandomAccessIterator, typename Size, typename Comp>
 			requires std::sortable<RandomAccessIterator, Comp>
-			void _comb_sort(RandomAccessIterator a, Size n, Comp comp) {
+			void _inner_comb_sort(RandomAccessIterator a, Size n, Comp comp) {
 				// Initialize gap
 				Size gap = n;
 
@@ -128,7 +138,7 @@ namespace MayanSort {
 				// iteration caused a swap
 				while (gap != 1 || swapped) {
 					// Find next gap
-					gap = _next_gap(gap);
+					gap = _get_next_gap(gap);
 
 					// Initialize swapped as false so that we can
 					// check if swap happened or not
@@ -147,7 +157,7 @@ namespace MayanSort {
 			template<typename RandomAccessIterator, typename Compare>
 			requires std::sortable<RandomAccessIterator, Compare>
 			void combsort(RandomAccessIterator first, RandomAccessIterator last, Compare comp) {
-				_comb_sort(
+				_inner_comb_sort(
 					first, std::distance(first, last), comp);
 			}
 		}
@@ -159,7 +169,7 @@ namespace MayanSort {
 			then a[i] and a[j] are interchanged.*/
 			template<typename RandomAccessIterator, typename Size, typename Comp>
 			requires std::sortable<RandomAccessIterator, Comp>
-			void _compare(RandomAccessIterator a, Size i, Size j, bool dir, Comp comp)
+			void _bitonic_cmp(RandomAccessIterator a, Size i, Size j, bool dir, Comp comp)
 			{
 				if (!dir == comp(a[j], a[i])) std::swap(a[i], a[j]);
 			}
@@ -175,7 +185,7 @@ namespace MayanSort {
 				if (cnt > 1)
 				{
 					Size k = cnt / 2;
-					for (Size i = low; i < low + k; i++) _compare(a, i, i + k, dir, comp);
+					for (Size i = low; i < low + k; i++) _bitonic_cmp(a, i, i + k, dir, comp);
 					_bitonic_merge(a, low, k, dir, comp);
 					_bitonic_merge(a, low + k, k, dir, comp);
 				}
@@ -186,7 +196,7 @@ namespace MayanSort {
 				calls bitonicMerge to make them in the same order */
 			template<typename RandomAccessIterator, typename Size, typename Comp>
 			requires std::sortable<RandomAccessIterator, Comp>
-			void _bitonic_sort(RandomAccessIterator a, Size low, Size cnt, bool dir, Comp comp)
+			void _inner_bitonic_sort(RandomAccessIterator a, Size low, Size cnt, bool dir, Comp comp)
 			{
 				if (cnt > 1)
 				{
@@ -207,7 +217,7 @@ namespace MayanSort {
 			template<typename RandomAccessIterator, typename Compare>
 			requires std::sortable<RandomAccessIterator, Compare>
 			void bitonic_sort(RandomAccessIterator first, RandomAccessIterator last, Compare comp) {
-				_bitonic_sort(
+				_inner_bitonic_sort(
 					first, 
 					(MayanSort::ItSize<RandomAccessIterator>)0, std::distance(first, last),
 					false, comp);
@@ -219,7 +229,7 @@ namespace MayanSort {
 			// Implement the ternary heap property of arr, with the maximum value placed in arr[i].
 			template<typename RandomAccessIterator, typename Size, typename Comp>
 			requires std::sortable<RandomAccessIterator, Comp>
-			void _heapify(RandomAccessIterator arr, Size n, Size i, Comp comp) {
+			void _ternary_heapify(RandomAccessIterator arr, Size n, Size i, Comp comp) {
 				Size largest = i;
 				Size l = 3 * i + 1;
 				Size m = 3 * i + 2;
@@ -231,28 +241,27 @@ namespace MayanSort {
 
 				if (largest != i) {
 					std::swap(arr[i], arr[largest]);
-					_heapify(arr, n, largest, comp);
+					_ternary_heapify(arr, n, largest, comp);
 				}
 			}
 
 			// Use ternary heap to sorting arr.
 			template<typename RandomAccessIterator, typename Size, typename Comp>
 			requires std::sortable<RandomAccessIterator, Comp>
-			void _heapsort(RandomAccessIterator arr, Size n, Comp comp) {
+			void _ternary_heapsort(RandomAccessIterator arr, Size n, Comp comp) {
 				for (Size i = n / 3 - 1; i >= 0; i--)
-					_heapify(arr, n, i, comp);
+					_ternary_heapify(arr, n, i, comp);
 
 				for (Size i = n - 1; i >= 0; i--) {
 					std::swap(arr[0], arr[i]);
-					_heapify(arr, i, (Size)0, comp);
+					_ternary_heapify(arr, i, (Size)0, comp);
 				}
 			}
 
 			template<typename RandomAccessIterator, typename Compare>
 			requires std::sortable<RandomAccessIterator, Compare>
 			void ternary_heap_sort(RandomAccessIterator first, RandomAccessIterator last, Compare comp) {
-				_heapsort(
-					arr, std::distance(first, last), comp);
+				_ternary_heapsort(first, std::distance(first, last), comp);
 			}
 		}
 
@@ -434,7 +443,7 @@ namespace MayanSort {
 			// Stooge Sort
 			template<typename RandomAccessIterator, typename Size, typename Comp>
 			requires std::sortable<RandomAccessIterator, Comp>
-			void _stoogesort(RandomAccessIterator arr, Size l, Size h, Comp comp)
+			void _inner_stoogesort(RandomAccessIterator arr, Size l, Size h, Comp comp)
 			{
 				// Base Case
 				if (l >= h) return;
@@ -450,28 +459,28 @@ namespace MayanSort {
 
 					// Recursively sort the first
 					// 2/3 elements
-					_stoogesort(arr, l, h - t, comp);
+					_inner_stoogesort(arr, l, h - t, comp);
 
 					// Recursively sort the last
 					// 2/3 elements
-					_stoogesort(arr, l + t, h, comp);
+					_inner_stoogesort(arr, l + t, h, comp);
 
 					// Recursively sort the first
 					// 2/3 elements again
-					_stoogesort(arr, l, h - t, comp);
+					_inner_stoogesort(arr, l, h - t, comp);
 				}
 			}
 
 			template<typename RandomAccessIterator, typename Compare>
 			requires std::sortable<RandomAccessIterator, Compare>
 			void stooge_sort(RandomAccessIterator first, RandomAccessIterator last, Compare comp) {
-				_stoogesort(first, (MayanSort::ItSize<It>)0, std::distance(first, last) - 1, comp);
+				_inner_stoogesort(first, (MayanSort::ItSize<It>)0, std::distance(first, last) - 1, comp);
 			}
 
 			// Slow Sort
 			template<typename RandomAccessIterator, typename Size, typename Comp>
 			requires std::sortable<RandomAccessIterator, Comp>
-			void _slow_sort(RandomAccessIterator A, Size i, Size j, Comp comp)
+			void _inner_slow_sort(RandomAccessIterator A, Size i, Size j, Comp comp)
 			{
 				// Base Case
 				if (i >= j)
@@ -481,10 +490,10 @@ namespace MayanSort {
 				Size m = (i + j) / 2;
 
 				// Recursively call with left half
-				_slow_sort(A, i, m, comp);
+				_inner_slow_sort(A, i, m, comp);
 
 				// Recursively call with right half
-				_slow_sort(A, m + 1, j, comp);
+				_inner_slow_sort(A, m + 1, j, comp);
 
 				// Swap if first element
 				// is lower than second
@@ -494,13 +503,13 @@ namespace MayanSort {
 
 				// Recursively call with whole
 				// array except maximum element
-				_slow_sort(A, i, j - 1, comp);
+				_inner_slow_sort(A, i, j - 1, comp);
 			}
 
 			template<typename RandomAccessIterator, typename Compare>
 			requires std::sortable<RandomAccessIterator, Compare>
 			void slow_sort(RandomAccessIterator first, RandomAccessIterator last, Compare comp) {
-				_slow_sort(first, (MayanSort::ItSize<It>)0, std::distance(first, last) - 1, comp);
+				_inner_slow_sort(first, (MayanSort::ItSize<It>)0, std::distance(first, last) - 1, comp);
 			}
 		}
 
@@ -528,7 +537,7 @@ namespace MayanSort {
 			}
 
 			template<typename InputIter, typename OutputIter>
-			OutputIter weave_merge(InputIter first, InputIter mid, InputIter last, OutputIter dest) {
+			OutputIter _weave_merge(InputIter first, InputIter mid, InputIter last, OutputIter dest) {
 				InputIter a = first, b = mid;
 				OutputIter c = dest;
 				bool flag = false;
@@ -542,6 +551,13 @@ namespace MayanSort {
 				if (b < last) c = std::copy(b, last, c);
 				return c;
 			}
+            template<typename BidIter, typename T, typename Compare>
+            void _merge_with_buffer(BidIter first, BidIter mid, BidIter last, T *buffer, Compare compare){
+				T* end = _weave_merge(first, mid, last, buffer);
+				_insertion_sort(buffer, end, compare);
+				std::copy(buffer, end, first);
+			}
+				
 
 			template<typename BidIter, typename T, typename Size, typename Compare>
 			void wsort(BidIter first, BidIter last, Compare compare) {
@@ -551,10 +567,9 @@ namespace MayanSort {
 				wsort<BidIter, T, Size, Compare>(first, mid, compare);
 				wsort<BidIter, T, Size, Compare>(mid, last, compare);
 
-				T* buffer = new T[dis];
-				T* buffer_end = weave_merge(first, mid, last, buffer);
-				_insertion_sort(buffer, buffer_end, compare);
-				std::copy(buffer, buffer_end, first);
+				_impl::_tmp_buffer<T, Size> buf_object(dis);
+			    _merge_with_buffer(first, mid, last, buf_object.memory, compare);
+				delete buf_object;
 			}
 
 		}
