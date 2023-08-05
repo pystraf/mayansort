@@ -36,11 +36,12 @@ namespace MayanSort {
             T* memory;
             Size size;
             explicit tmp_buffer(Size size){
-				memory = new T[size];
-			}
+		        memory = new T[size];
+	        }
             ~tmp_buffer(){
                 delete [] memory;
 			}
+	    }
 
 		// Dual-Pivot Quicksort
 		namespace _dualsort {
