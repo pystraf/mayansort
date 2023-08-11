@@ -31,17 +31,17 @@
 
 namespace MayanSort {
 	namespace _impl {
-        template<typename T, typename Size>
-        struct tmp_buffer{
-            T* memory;
-            Size size;
-            explicit tmp_buffer(Size size){
-		        memory = new T[size];
-	        }
-            ~tmp_buffer(){
-                delete [] memory;
+        	template<typename T, typename Size>
+	        struct tmp_buffer{
+	            	T* memory;
+	            	Size size;
+	            	explicit tmp_buffer(Size size){
+			        memory = new T[size];
+		        }
+	            	~tmp_buffer(){
+	                	delete [] memory;
 			}
-	    }
+		}
 
 		// Dual-Pivot Quicksort
 		namespace _dualsort {
@@ -616,7 +616,7 @@ namespace MayanSort {
 
 
 		template<typename T, typename RandomAccessIterator, typename Distance, typename Compare>
-		void _circleSort(RandomAccessIterator a, Distance n, Compare comp) {
+		void _inner_circleSort(RandomAccessIterator a, Distance n, Compare comp) {
 			for (Distance i = 0; i < n - 1; i++) {
 				for (Distance j = i + 1; j < n; j++) {
 					if (comp(a[j], a[i])) {
@@ -630,8 +630,14 @@ namespace MayanSort {
 			}
 		}
 
+		template<typename RandomAccessIterator, typename Compare>
+		void circle_sort(RandomAccessIterator first, RandomAccessIterator last, Compare comp){
+			typedef typename MayanSort::ItValue<RandomAccessIterator> T;
+			_inner_circleSort<t>(first, std::distance(first, last), comp);
+		}
+
 		template<typename RandomAccessIterator, typename Distance, typename Compare>
-		void _gnomeSort(RandomAccessIterator a, Distance n, Compare comp) {
+		void _inner_gnomeSort(RandomAccessIterator a, Distance n, Compare comp) {
 			Distance i = 0;
 			while (i < n) {
 				if (i == 0 || comp(a[i - 1], a[i])) {
@@ -644,9 +650,14 @@ namespace MayanSort {
 			}
 		}
 
+		template<typename RandomAccessIterator, typename Compare>
+		void gnome_sort(RandomAccessIterator first, RandomAccessIterator last, Compare comp){
+			_inner_gnomeSort(first, std::distance(first, last), comp);
+		}
+
 		/* function to sort arr using shellSort */
 		template<typename T, typename RandomAccessIterator, typename Size, typename Comp>
-		void _shellSort(RandomAccessIterator arr, Size n, Comp comp) {
+		void _inner_shellSort(RandomAccessIterator arr, Size n, Comp comp) {
 			// Start with a big gap, then reduce the gap
 			for (Size gap = n / 2; gap > 0; gap /= 2) {
 				// Do a gapped insertion sort for this gap size.
@@ -667,6 +678,12 @@ namespace MayanSort {
 					arr[j] = temp;
 				}
 			}
+		}
+
+		template<typename RandomAccessIterator, typename Compare>
+		void shell_sort(RandomAccessIterator first, RandomAccessIterator last, Compare comp){
+			typedef typename MayanSort::ItValue<RandomAccessIterator> T;
+			_inner_shellSort<T>(first, std::distance(first, last), comp);
 		}
 
 		template<typename T, typename RandomAccessIterator, typename Size, typename Comp>
@@ -703,9 +720,15 @@ namespace MayanSort {
 			}
 		}
 
+		template<typename RandomAccessIterator, typename Compare>
+		void patience_sort(RandomAccessIterator first, RandomAccessIterator last, Compare comp){
+			typedef typename MayanSort::ItValue<RandomAccessIterator> T;
+			_patience_sort<T>(first, std::distance(first, last), comp);
+		}
+
 		// A function to sort the algorithm using Odd Even sort
 		template<typename RandomAccessIterator, typename Size, typename Comp>
-		void _oddEvenSort(RandomAccessIterator arr, Size n, Comp comp) {
+		void _inner_oddEvenSort(RandomAccessIterator arr, Size n, Comp comp) {
 			bool isSorted = false; // Initially array is unsorted
 
 			while (!isSorted)
@@ -734,14 +757,24 @@ namespace MayanSort {
 			}
 		}
 
+		template<typename RandomAccessIterator, typename Compare>
+		void odd_even_sort(RandomAccessIterator first, RandomAccessIterator last, Compare comp){
+			_inner_oddEvenSort(first, std::distance(first, last), comp);
+		}
+
 		template<typename RandomAccessIterator, typename Distance, typename Comp>
-		void _sillySort(RandomAccessIterator arr, Distance n, Comp comp) {
+		void _inner_sillySort(RandomAccessIterator arr, Distance n, Comp comp) {
 			for (Distance i = 0; i < n - 1; i++) {
 				if (comp(arr[i + 1], arr[i])) {
 					std::swap(arr[i], arr[i + 1]);
 					i = -1;
 				}
 			}
+		}
+
+		template<typename RandomAccessIterator, typename Compare>
+		void silly_sort(RandomAccessIterator first, RandomAccessIterator last, Compare comp){
+			_inner_sillySort(first, std::distance(first, last), comp);
 		}
 
 		template<typename ForwardIt, typename Comp>
@@ -823,7 +856,7 @@ namespace MayanSort {
 		}
 
 		template<typename sort_element_t, typename iter_t, typename compare_func_t>
-		void double_insert_sort(iter_t beg, iter_t end, compare_func_t comp)
+		void _double_insert_sort(iter_t beg, iter_t end, compare_func_t comp)
 		{
 			if (end - beg > 1)
 			{
@@ -864,6 +897,11 @@ namespace MayanSort {
 			}
 		}
 
+		template<typename RandomAccessIterator, typename Compare>
+		void double_insertion_sort(RandomAccessIterator first, RandomAccessIterator last, Compare comp){
+			typedef typename MayanSort::ItValue<RandomAccessIterator> T;
+			_double_insert_sort<T>(first, last, comp);
+		}
 	}
 
 }
