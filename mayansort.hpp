@@ -321,8 +321,7 @@ namespace MayanSort {
     // Implementation by myself.
 
     _SortTpl _SortHead CircleSort(It first, It last, Comp comp) {
-        typedef ItValue<It> T;
-        _impl::_circleSort<T>(first, std::distance(first, last), comp);
+        _impl::circle_sort(first, last, comp);
     }
 
     _SortTplD _SortHead CircleSort(It first, It last) {
@@ -334,7 +333,7 @@ namespace MayanSort {
     // Implementation by myself
 
     _SortTpl _SortHead GnomeSort(It first, It last, Comp comp) {
-        _impl::_gnomeSort(first, std::distance(first, last), comp);
+        _impl::gome_sort(first, last, comp);
     }
 
     _SortTplD _SortHead GnomeSort(It first, It last) {
@@ -359,8 +358,7 @@ namespace MayanSort {
     // Implementation: https://www.geeksforgeeks.org/cpp-program-for-shellsort/
 
     _SortTpl _SortHead ShellSort(It first, It last, Comp comp) {
-        typedef ItValue<it> T;
-        _impl::_shellSort<T>(first, len, comp);
+        _impl::shell_sort(first, last, comp);
     }
 
     _SortTplD _SortHead ShellSort(It first, It last) {
@@ -385,8 +383,7 @@ namespace MayanSort {
     // Implementation by myself.
 
     _SortTpl _SortHead PatienceSort(It first, It last, Comp comp) {
-        typedef ItValue<It> T;
-        _impl::_patience_sort<T>(first, std::distance(first, last), comp);
+        _impl::patience_sort(first, last, comp);
     }
 
     _SortTplD _SortHead PatienceSort(It first, It last) {
@@ -397,7 +394,7 @@ namespace MayanSort {
     // Odd Even Sort (unstable)
     // Implementation: https://www.geeksforgeeks.org/odd-even-sort-brick-sort/
     _SortTpl _SortHead OddEvenSort(It first, It last, Comp comp) {
-        _impl::_oddEvenSort(first, std::distance(first, last), comp);
+        _impl::odd_even_sort(first, last, comp);
     }
 
     _SortTplD _SortHead OddEvenSort(It first, It last) {
@@ -572,8 +569,7 @@ namespace MayanSort {
     // Double Insertion Sort (stable)
     // Implementation: https://baobaobear.github.io/post/20191009-sorting-2/
     _SortTpl _SortHead DoubleInsertSort(It first, It last, Comp comp) {
-        typedef ItValue<It> T;
-        _impl::double_insert_sort<T>(first, last, comp);
+        _impl::double_insertion_sort(first, last, comp);
     }
 
     _SortTplD _SortHead DoubleInsertSort(It first, It last) {
