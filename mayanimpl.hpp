@@ -552,8 +552,8 @@ namespace MayanSort {
 				if (b < last) c = std::copy(b, last, c);
 				return c;
 			}
-            template<typename BidIter, typename T, typename Compare>
-            void _merge_with_buffer(BidIter first, BidIter mid, BidIter last, T *buffer, Compare compare){
+                        template<typename BidIter, typename T, typename Compare>
+                        void _merge_with_buffer(BidIter first, BidIter mid, BidIter last, T *buffer, Compare compare){
 				T* end = _weave_merge(first, mid, last, buffer);
 				_insertion_sort(buffer, end, compare);
 				std::copy(buffer, end, first);
